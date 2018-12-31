@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Specialized;
 using System.Linq;
 using Android.Graphics;
@@ -27,7 +27,7 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
             map.CameraMoveStarted += Map_CameraMoveStarted;
             map.CameraMoveCancel += Map_CameraMoveCancel;
             map.CameraMove += Map_CameraMove;
-            fragment.OnMapChangedListener = (this);
+            mapView.AddOnMapChangedListener(this);
         }
 
         protected virtual void RemoveMapEvents()
@@ -43,10 +43,7 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
                 map.CameraMove -= Map_CameraMove;
             }
 
-            if (fragment != null)
-            {
-                fragment.OnMapChangedListener = null;
-            }
+            mapView.RemoveOnMapChangedListener(this);
         }
 
         private void Map_CameraMove(object sender, EventArgs e)
@@ -91,8 +88,6 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
 
         void MarkerClicked(object o, MapboxMap.MarkerClickEventArgs args)
         {
-            fragment?.ToggleInfoWindow(map, args.P0);
-
             if (Element?.Annotations?.Count() > 0)
             {
                 var fm = Element.Annotations.FirstOrDefault(d => d.Id == args.P0.Id.ToString());

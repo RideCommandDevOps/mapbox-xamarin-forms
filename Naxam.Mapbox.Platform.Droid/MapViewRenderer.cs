@@ -34,13 +34,14 @@ using MMarker = Com.Mapbox.Mapboxsdk.Annotations.MarkerOptions;
 using FPolyline = Naxam.Controls.Mapbox.Forms.PolylineAnnotation;
 using MPolyline = Com.Mapbox.Mapboxsdk.Annotations.PolylineOptions;
 using Com.Mapbox.Mapboxsdk.Offline;
+using Android.OS;
 
 namespace Naxam.Controls.Mapbox.Platform.Droid
 {
-    public partial class MapViewRenderer : ViewRenderer<MapView, View>, IOnMapReadyCallback
+    public partial class MapViewRenderer : ViewRenderer<MapView, View>, IOnMapReadyCallback, Com.Mapbox.Mapboxsdk.Maps.MapView.IOnMapChangedListener
     {
         protected MapboxMap map;
-        protected MapViewFragment fragment;
+        protected Com.Mapbox.Mapboxsdk.Maps.MapView mapView;
         private const int SIZE_ZOOM = 13;
         private Position currentCamera;
         bool mapReady;
@@ -49,6 +50,8 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
         {
             _annotationDictionaries = new Dictionary<string, Sdk.Annotations.Annotation>();
         }
+
+        public static Bundle Bundle { get; set; }
 
         protected override void OnElementChanged(ElementChangedEventArgs<MapView> e)
         {
@@ -69,20 +72,14 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
             e.NewElement.AnnotationChanged += Element_AnnotationChanged;
             if (Control == null)
             {
-                var activity = (AppCompatActivity)Context;
-                var view = new Android.Widget.FrameLayout(activity)
-                {
-                    Id = GenerateViewId()
-                };
+                this.mapView = new Com.Mapbox.Mapboxsdk.Maps.MapView(this.Context);
+                this.mapView.OnCreate(Bundle);
+                this.mapView.OnStart();
+                this.mapView.OnResume();
+                SetNativeControl(this.mapView);
+                this.mapView?.AddOnMapChangedListener(this);
+                this.mapView?.GetMapAsync(this);
 
-                SetNativeControl(view);
-
-                fragment = new MapViewFragment();
-
-                activity.SupportFragmentManager.BeginTransaction()
-                .Replace(view.Id, fragment)
-                .CommitAllowingStateLoss();
-                fragment.GetMapAsync(this);
                 currentCamera = new Position();
 
                 if (mapReady)
@@ -339,21 +336,9 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
         {
             RemoveMapEvents();
 
-            if (fragment != null)
-            {
-                if (fragment.StateSaved)
-                {
-                    var activity = (AppCompatActivity)Context;
-                    var fm = activity.SupportFragmentManager;
-
-                    fm.BeginTransaction()
-                        .Remove(fragment)
-                        .CommitAllowingStateLoss();
-                }
-
-                fragment.Dispose();
-                fragment = null;
-            }
+            mapView?.RemoveOnMapChangedListener(this);
+            mapView.OnStop();
+            mapView = null;
 
             base.Dispose(disposing);
         }
