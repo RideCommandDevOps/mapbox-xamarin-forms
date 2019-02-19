@@ -20,16 +20,25 @@ namespace Naxam.Controls.Mapbox.Forms
 
         public double[] Center { get; set; }
 
+        public bool IsOffline { get; set; }
+
         public string UrlString
         {
             get
             {
-                if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Owner))
+                if (this.IsOffline && Device.RuntimePlatform == Device.Android)
                 {
-
-                    return "mapbox://styles/" + Owner + "/" + Id;
+                    return "asset://styles_" + this.Id + ".json";
                 }
-                return null;
+                else
+                {
+                    if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Owner))
+                    {
+
+                        return "mapbox://styles/" + Owner + "/" + Id;
+                    }
+                    return null;
+                }
             }
         }
 
