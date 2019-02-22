@@ -28,7 +28,7 @@ namespace Naxam.Controls.Mapbox.Forms
             {
                 if (this.IsOffline && Device.RuntimePlatform == Device.Android)
                 {
-                    return "asset://styles_" + this.Id + ".json";
+                    return "asset://Styles/styles_" + this.Id + ".json";
                 }
                 else
                 {
