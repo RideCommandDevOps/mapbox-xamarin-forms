@@ -96,11 +96,9 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("MAPVIEW MAIN HOOK");
                     this.mapView = MainMapView;
                     if (this.mapView == null)
                     {
-                        System.Diagnostics.Debug.WriteLine("MAPVIEW NEW HOOK");
                         this.mapView = new Sdk.Maps.MapView(activity);
                         this.mapView.SetStyleUrl(this.GetDefaultStyle());
 
