@@ -39,6 +39,7 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
 {
     public partial class MapViewRenderer : ViewRenderer<MapView, View>, IOnMapReadyCallback
     {
+        public static Sdk.Maps.MapView MainMapView { get; set; }
         protected MapboxMap map;
         protected MapViewFragment fragment;
         protected Sdk.Maps.MapView mapView;
@@ -93,16 +94,22 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
                 }
                 else
                 {
-                    this.mapView = new Sdk.Maps.MapView(activity);
-                    this.mapView.SetStyleUrl(this.GetDefaultStyle());
+                    this.mapView = MainMapView;
 
-                    // TODO: Call these lifecycle events in the correct place. They should be called from the
-                    // Activity's respective methods, not from here. Idk what problems this could cause.
-                    // Note: this is why the renderer originally used Fragments. They have their own lifecycles
-                    // that are not tied to the main activity (which we only have one of because of Forms).
-                    this.mapView.OnCreate(null);
-                    this.mapView.OnStart();
-                    this.mapView.OnResume();
+                    // If main activity has not already created a main map...
+                    if (this.mapView == null)
+                    {
+                        this.mapView = new Sdk.Maps.MapView(activity);
+                        this.mapView.SetStyleUrl(this.GetDefaultStyle());
+
+                        // Get main map caught up with main activity's state.
+                        this.mapView.OnCreate(null);
+                        this.mapView.OnStart();
+                        this.mapView.OnResume();
+
+                        // Make main map availabe to main activity for future lifecycle events.
+                        MainMapView = this.mapView;
+                    }
 
                     this.SetNativeControl(this.mapView);
                     this.mapView.AddOnMapChangedListener(this);
