@@ -77,6 +77,8 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
 
                 if (e.NewElement.InsideFragment)
                 {
+                    System.Diagnostics.Debug.WriteLine("MAPVIEW FRAGMENT HOOK");
+
                     var view = new Android.Widget.FrameLayout(activity)
                     {
                         Id = GenerateViewId()
@@ -94,13 +96,18 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("MAPVIEW HOOK");
+                    System.Diagnostics.Debug.WriteLine("MAPVIEW MAIN HOOK");
                     this.mapView = MainMapView;
                     if (this.mapView == null)
                     {
+                        System.Diagnostics.Debug.WriteLine("MAPVIEW NEW HOOK");
                         this.mapView = new Sdk.Maps.MapView(activity);
                         this.mapView.SetStyleUrl(this.GetDefaultStyle());
-                        this.mapView.GetMapAsync(this);
+
+                        this.mapView.OnCreate(null);
+                        this.mapView.OnStart();
+                        this.mapView.OnResume();
+                        MainMapView = this.mapView;
                     }
 
                     this.SetNativeControl(this.mapView);
