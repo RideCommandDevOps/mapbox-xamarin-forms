@@ -374,12 +374,16 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
             {
                 if (fragment.StateSaved)
                 {
+                    Android.Util.Log.Warn("MAP", "DISPOSE1 " + fragment.GetHashCode());
                     var activity = (AppCompatActivity)Context;
                     var fm = activity.SupportFragmentManager;
+
+                    Android.Util.Log.Warn("MAP", "DISPOSE2 " + fragment.GetHashCode());
 
                     fm.BeginTransaction()
                         .Remove(fragment)
                         .CommitAllowingStateLoss();
+                    Android.Util.Log.Warn("MAP", "DISPOSE3 " + fragment.GetHashCode());
                 }
 
                 fragment.Dispose();
