@@ -7,11 +7,16 @@ using Com.Mapbox.Mapboxsdk.Maps;
 
 namespace Naxam.Controls.Mapbox.Platform.Droid
 {
-    public class MapViewFragment : SupportMapFragment, MapView.IOnMapChangedListener
+    public class MapViewFragment : SupportMapFragment,
+        MapView.IOnCameraDidChangeListener,
+        MapView.IOnDidFinishLoadingStyleListener,
+        MapView.IOnDidFinishRenderingMapListener
     {
         public MapView MapView { get; private set; }
 
-        public MapView.IOnMapChangedListener OnMapChangedListener { get; set; }
+        public MapView.IOnCameraDidChangeListener OnCameraDidChangeListener { get; set; }
+        public MapView.IOnDidFinishLoadingStyleListener OnDidFinishLoadingStyleListener { get; set; }
+        public MapView.IOnDidFinishRenderingMapListener OnDidFinishRenderingMapListener { get; set; }
 
         public bool StateSaved { get; private set; }
 
@@ -30,20 +35,34 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
             base.OnViewCreated(view, savedInstanceState);
 
             MapView = view as MapView;
-            MapView?.AddOnMapChangedListener(this);
             MapView?.OnCreate(savedInstanceState);
+            MapView?.AddOnCameraDidChangeListener(this);
+            MapView?.AddOnDidFinishLoadingStyleListener(this);
+            MapView?.AddOnDidFinishRenderingMapListener(this);
         }
 
         public override void OnDestroyView()
         {
             base.OnDestroyView();
-            MapView?.RemoveOnMapChangedListener(this);
+            MapView?.RemoveOnCameraDidChangeListener(this);
+            MapView?.RemoveOnDidFinishLoadingStyleListener(this);
+            MapView?.RemoveOnDidFinishRenderingMapListener(this);
             MapView?.OnDestroy();
         }
 
-        public void OnMapChanged(int p0)
+        public void OnCameraDidChange(bool p0)
         {
-            OnMapChangedListener?.OnMapChanged(p0);
+            OnCameraDidChangeListener?.OnCameraDidChange(p0);
+        }
+
+        public void OnDidFinishLoadingStyle()
+        {
+            OnDidFinishLoadingStyleListener?.OnDidFinishLoadingStyle();
+        }
+
+        public void OnDidFinishRenderingMap(bool p0)
+        {
+            OnDidFinishRenderingMapListener?.OnDidFinishRenderingMap(p0);
         }
 
         public override void OnResume()
