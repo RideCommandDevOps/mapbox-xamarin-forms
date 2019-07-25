@@ -126,21 +126,23 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
                      && !Element.Pitch.Equals(MapView.Camera.Pitch))
             {
                 var currentCamera = MapView.Camera;
-                var newCamera = MGLMapCamera.CameraLookingAtCenterCoordinate(currentCamera.CenterCoordinate,
-                                                                             currentCamera.Altitude,
-                                                                              (nfloat)Element.Pitch,
-                                                                             currentCamera.Heading);
-                MapView.SetCamera(newCamera, true);
+                currentCamera.Pitch = (nfloat)Element.Pitch;
+                //var newCamera = MGLMapCamera.CameraLookingAtCenterCoordinate(currentCamera.CenterCoordinate,
+                //                                                             currentCamera.Altitude,
+                //                                                              (nfloat)Element.Pitch,
+                //                                                             currentCamera.Heading);
+                MapView.SetCamera(currentCamera, true);
             }
             else if (e.PropertyName == FormsMap.RotatedDegreeProperty.PropertyName
                      && !Element.RotatedDegree.Equals(MapView.Camera.Heading))
             {
                 var currentCamera = MapView.Camera;
-                var newCamera = MGLMapCamera.CameraLookingAtCenterCoordinate(currentCamera.CenterCoordinate,
-                                                                              currentCamera.Altitude,
-                                                                              currentCamera.Pitch,
-                                                                              (nfloat)Element.RotatedDegree);
-                MapView.SetCamera(newCamera, true);
+                currentCamera.Heading = (nfloat)Element.RotatedDegree;
+                //var newCamera = MGLMapCamera.CameraLookingAtCenterCoordinate(currentCamera.CenterCoordinate,
+                //                                                              currentCamera.Altitude,
+                //                                                              currentCamera.Pitch,
+                //                                                              (nfloat)Element.RotatedDegree);
+                MapView.SetCamera(currentCamera, true);
             }
             else if (e.PropertyName == FormsMap.ShowUserLocationProperty.PropertyName)
             {

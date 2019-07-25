@@ -100,14 +100,6 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
                     if (this.mapView == null)
                     {
                         this.mapView = new Sdk.Maps.MapView(activity);
-                        if (map != null)
-                        {
-                            map.SetStyle(new Sdk.Maps.Style.Builder().FromUrl(this.GetDefaultStyle()));
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debugger.Break();  //how do we set the initial map style?
-                        }
 
                         // Get main map caught up with main activity's state.
                         this.mapView.OnCreate(null);
@@ -224,7 +216,7 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
             Element.ReloadStyleAction = () =>
             {
                 //https://github.com/mapbox/mapbox-gl-native/issues/9511
-                map.SetStyle(new Sdk.Maps.Style.Builder().FromUrl(map.Style.Url));
+                map.SetStyle(map.Style.Url);
             };
 
             Element.UpdateViewPortAction = (Position centerLocation, double? zoomLevel, double? bearing, bool animated, Action completionHandler) =>
@@ -471,7 +463,7 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
         {
             if (Element.MapStyle != null && !string.IsNullOrEmpty(Element.MapStyle.UrlString))
             {
-                map.SetStyle(new Sdk.Maps.Style.Builder().FromUrl(Element.MapStyle.UrlString));
+                map.SetStyle(Element.MapStyle.UrlString);
                 Element.MapStyle.PropertyChanging += OnMapStylePropertyChanging;
                 Element.MapStyle.PropertyChanged += OnMapStylePropertyChanged;
             }
