@@ -4,6 +4,6 @@
     <AssemblyVersion>1.0.5.2</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" />
+    <PackageReference Include="Xamarin.Forms" Version="4.2.0.778463" />
   </ItemGroup>
 </Project>

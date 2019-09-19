@@ -219,8 +219,13 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
                 var ne = new CLLocationCoordinate2D(Element.Region.NorthEast.Lat, Element.Region.NorthEast.Long);
                 var sw = new CLLocationCoordinate2D(Element.Region.SouthWest.Lat, Element.Region.SouthWest.Long);
                 var bounds = new MGLCoordinateBounds() { ne = ne, sw = sw };
-                MapView.SetVisibleCoordinateBounds(bounds, true);
+                MapView.SetVisibleCoordinateBounds(bounds, true, SetVisibleCoordinateBoundsCompleted);
             }
+        }
+
+        private void SetVisibleCoordinateBoundsCompleted()
+        {
+            
         }
 
         protected virtual void UpdateCenter()
@@ -486,7 +491,7 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
                     if (anno is MGLShape shape
                         && shape.Handle.ToString() == obj.Item1)
                     {
-                        MapView.SelectAnnotation(shape, obj.Item2);
+                        MapView.SelectAnnotation(shape, obj.Item2, AnnotationSelected);
                         break;
                     }
                 }
@@ -508,10 +513,15 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
             };
         }
 
+        private void AnnotationSelected()
+        {
+            
+        }
+
         private IFeature[] GetFeaturesArroundPoint(Point point, double radius, string[] layers)
         {
             var selectableLayers = SelectableLayersFromSources(layers);
-            NSObject[] features;
+            IMGLFeature[] features;
             var cgPoint = new CGPoint((nfloat)point.X, (nfloat)point.Y);
             if (radius <= 0)
             {
@@ -525,9 +535,8 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
 
             var output = new List<IFeature>();
 
-            foreach (NSObject obj in features)
+            foreach (IMGLFeature feature in features)
             {
-                var feature = obj as IMGLFeature;
                 if (feature == null || feature.Attributes == null)
                 {
                     continue;
