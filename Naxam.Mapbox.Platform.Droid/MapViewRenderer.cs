@@ -463,7 +463,7 @@ namespace Naxam.Controls.Mapbox.Platform.Droid
         {
             if (Element.MapStyle != null && !string.IsNullOrEmpty(Element.MapStyle.UrlString))
             {
-                map.SetStyle(Element.MapStyle.UrlString);
+                map.SetStyle(new Sdk.Maps.Style.Builder().FromUri(Element.MapStyle.UrlString));// (Element.MapStyle.UrlString);
                 Element.MapStyle.PropertyChanging += OnMapStylePropertyChanging;
                 Element.MapStyle.PropertyChanged += OnMapStylePropertyChanged;
             }

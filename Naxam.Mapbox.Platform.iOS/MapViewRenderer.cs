@@ -212,6 +212,7 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
                 Debug.WriteLine($"ERROR: {ex.Message}");
             }
         }
+
         void UpdateRegion()
         {
             if (Element?.Region != MapRegion.Empty)
@@ -219,13 +220,8 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
                 var ne = new CLLocationCoordinate2D(Element.Region.NorthEast.Lat, Element.Region.NorthEast.Long);
                 var sw = new CLLocationCoordinate2D(Element.Region.SouthWest.Lat, Element.Region.SouthWest.Long);
                 var bounds = new MGLCoordinateBounds() { ne = ne, sw = sw };
-                MapView.SetVisibleCoordinateBounds(bounds, true, SetVisibleCoordinateBoundsCompleted);
+                MapView.SetVisibleCoordinateBounds(bounds, new UIEdgeInsets(0, 0, 0, 0), true);
             }
-        }
-
-        private void SetVisibleCoordinateBoundsCompleted()
-        {
-            
         }
 
         protected virtual void UpdateCenter()
@@ -482,20 +478,20 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
                 return true;
             };
 
-            Element.SelectAnnotationAction = (Tuple<string, bool> obj) =>
-            {
-                if (obj == null || MapView == null || MapView.Annotations == null) return;
-                foreach (var childObj in MapView.Annotations)
-                {
-                    var anno = Runtime.GetNSObject<MGLPointAnnotation>(childObj.Handle);
-                    if (anno is MGLShape shape
-                        && shape.Handle.ToString() == obj.Item1)
-                    {
-                        MapView.SelectAnnotation(shape, obj.Item2, AnnotationSelected);
-                        break;
-                    }
-                }
-            };
+            //Element.SelectAnnotationAction = (Tuple<string, bool> obj) =>
+            //{
+            //    if (obj == null || MapView == null || MapView.Annotations == null) return;
+            //    foreach (var childObj in MapView.Annotations)
+            //    {
+            //        var anno = Runtime.GetNSObject<MGLPointAnnotation>(childObj.Handle);
+            //        if (anno is MGLShape shape
+            //            && shape.Handle.ToString() == obj.Item1)
+            //        {
+            //            MapView.SelectAnnotation(shape, obj.Item2, AnnotationSelected);
+            //            break;
+            //        }
+            //    }
+            //};
 
             Element.DeselectAnnotationAction = (Tuple<string, bool> obj) =>
             {
@@ -525,12 +521,14 @@ namespace Naxam.Controls.Mapbox.Platform.iOS
             var cgPoint = new CGPoint((nfloat)point.X, (nfloat)point.Y);
             if (radius <= 0)
             {
-                features = MapView.VisibleFeaturesAtPoint(cgPoint, selectableLayers);
+                throw new NotImplementedException();
+                //features = MapView.VisibleFeaturesAtPoint(cgPoint, selectableLayers, NSPredicate.FromValue(true));
             }
             else
             {
-                var rect = new CGRect(cgPoint.X - (nfloat)radius, cgPoint.Y - (nfloat)radius, (nfloat)radius * 2, (nfloat)radius * 2);
-                features = MapView.VisibleFeaturesInRect(rect, selectableLayers);
+                throw new NotImplementedException();
+                //var rect = new CGRect(cgPoint.X - (nfloat)radius, cgPoint.Y - (nfloat)radius, (nfloat)radius * 2, (nfloat)radius * 2);
+                //features = MapView.VisibleFeaturesInRect(rect, selectableLayers);
             }
 
             var output = new List<IFeature>();
